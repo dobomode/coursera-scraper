@@ -63,4 +63,24 @@ At this stage, the script will start fetching and downloading all assets and vid
 
 ![test](./assets/asset-download.png)
 
-`coursera-dl` downloads 2 things
+`coursera-dl` downloads 2 types of files:
+
+1. **Assets** – This includes video transciptions, PPT slides, PDF notes, and any other materials made available by the course authors.
+
+2. **Lecture video** – This is the highest resolution lecture video (720p mp4 format).
+
+### Downloaded files
+
+`coursera-dl` will download all files in a hierarchical directory structure in the working directory of the script. The directory structure is as follows:
+
+`<course id>/<## - week id>/<## - module id>/<## - asset / video>`
+
+For example, on my Mac, the directory structure for the _Neural Networks and Deep Learning_ course looks as follows:
+
+![test](./assets/downloaded-files.png)
+
+## Notes and limitations
+
+-   Note that this script has not been tested extensively and might not run properly on your system. I have only tested this on my local Mac system. If you run into issues on other configurations, please submit an issue.
+
+-   Simiarly, this script has only been tested on a limited set of courses that I have purchased on Coursera. It is possible that the script does not run properly for other Coursera courses.
