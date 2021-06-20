@@ -1,5 +1,7 @@
 # coursera-scraper
 
+![coursera-scraper logo](./assets/cscraper-logo.png)
+
 A lightweight Node.js app to fetch assets & videos for Coursera courses.
 
 ## Why another Coursera download utility?
@@ -42,18 +44,18 @@ node index.js
 
 The script will ask you for the CAUTH value from the Coursera cookie.
 
-![test](./assets/prompt-cauth.png)
+![CAUTH](./assets/prompt-cauth.png)
 
 To get the CAUTH value:
 
 1. First log into [Coursera.org](https://www.coursera.org/)
 2. In your browser, open the Developer Tools and find the CAUTH value from the Coursera cookie. For example in Chrome, you can find this under Developer Tools => Application => Cookies => `https://www.coursera.org`.
 
-![test](./assets/chrome-coursera-cauth.png)
+![CAUTH](./assets/chrome-coursera-cauth.png)
 
 3. Copy the CAUTH value to the clipboard and paste it in the terminal where you ran the `coursera-scraper` script:
 
-![test](./assets/prompt-cauth2.png)
+![CAUTH](./assets/prompt-cauth2.png)
 
 > Note that you must fetch the CAUTH value after you have logged in successfully on Coursera. If you get an authentication error, most likely this means that your Coursera login and CAUTH values have expired. To fix this, log in again in Coursera and copy the CAUTH value again.
 
@@ -61,7 +63,7 @@ To get the CAUTH value:
 
 Next, the script will ask you for the ID of the course you would like to scrape:
 
-![test](./assets/prompt-cid.png)
+![CID](./assets/prompt-cid.png)
 
 This part is easy. The course ID is the relevant slug from the course URL. This is typically a dash-separated sequence of lower case words.
 
@@ -69,7 +71,7 @@ For example, the URL of the [Neural Networks and Deep Learning](https://www.cour
 
 Copy the course ID and paste in the `coursera-scraper` terminal:
 
-![test](./assets/prompt-cid2.png)
+![CID](./assets/prompt-cid2.png)
 
 > Note that the course ID and CAUTH values will stored in a local configuration store, so that if you run the script again, you can reuse the values by simply pressing `<ENTER>`.
 
@@ -77,7 +79,7 @@ Copy the course ID and paste in the `coursera-scraper` terminal:
 
 At this stage, the script will start fetching and downloading all assets and videos in the course. This might take a few minutes depending on the number and size of the assets.
 
-![test](./assets/asset-download.png)
+![Asset download](./assets/asset-download.png)
 
 `coursera-dl` downloads 2 types of files:
 
@@ -93,7 +95,7 @@ At this stage, the script will start fetching and downloading all assets and vid
 
 For example, on my Mac, the directory structure for the _Neural Networks and Deep Learning_ course looks as follows:
 
-![test](./assets/downloaded-files.png)
+![Downloaded files](./assets/downloaded-files.png)
 
 ## Notes and limitations
 

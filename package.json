@@ -12,6 +12,7 @@
         "axios": "^0.21.1",
         "chalk": "^4.1.1",
         "configstore": "^5.0.1",
+        "figlet": "^1.5.0",
         "inquirer": "^8.1.1",
         "nodejs-file-downloader": "^4.7.1"
     }

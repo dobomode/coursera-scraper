@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const Configstore = require('configstore');
 const path = require('path');
 const chalk = require('chalk');
+const figlet = require('figlet');
 const Downloader = require('nodejs-file-downloader');
 
 /**
@@ -315,6 +316,8 @@ const app = (() => {
      *              ...
      */
     async function main() {
+        log(chalk.yellow(figlet.textSync('cscraper', { font: 'standard', horizontalLayout: 'full' })));
+        log();
         try {
             await getCourseAndCauth();
             await getUserId();
