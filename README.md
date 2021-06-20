@@ -6,7 +6,7 @@ A lightweight Node.js app to fetch assets & videos for Coursera courses.
 
 As of Jun 2021, the popular `couresera-dl` script is unable to authenticate on the Coursera platform. See this [issue](https://github.com/coursera-dl/coursera-dl/issues/800). This project (`coursera-scraper`) is meant as a quick fix to provide a working solution to the Coursera community and is not meant as a full-fledged replacement of `coursera-dl`.
 
-## What does `coursera-dl` do?
+## What does `coursera-scraper` do?
 
 `coursera-scraper` is lightweight Node.js script (~300 lines), which fetches and downloads lecture assets and videos for a single course, and saves them in a hierarchical directory structure on the local filesystem.
 
