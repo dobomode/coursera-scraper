@@ -100,3 +100,8 @@ For example, on my Mac, the directory structure for the _Neural Networks and Dee
 -   Note that this script has not been tested extensively and might not run properly on your system. I have only tested this on my local Mac system. If you run into issues on other configurations, please submit an issue.
 
 -   Simiarly, this script has only been tested on a limited set of courses that I have purchased on Coursera. It is possible that the script does not run properly for other Coursera courses.
+
+-   The script does not download all types of assets. The focus is on downloading the main lecture video and additional assets provided by the authors. Specifically, the following are not downlaoded:
+
+    -   Jupyter notebooks
+    -   Non-video lectures (i.e. reading lectures)
