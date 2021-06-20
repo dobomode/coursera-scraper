@@ -19,17 +19,24 @@ As of Jun 2021, the popular `couresera-dl` script is unable to authenticate on t
 
 Clone the repo on your local system:
 
-`git clone https://github.com/dobomode/coursera-scraper.git`
+```
+git clone https://github.com/dobomode/coursera-scraper.git
+```
 
 Then install the packages:
 
-`npm install`
+```
+cd coursera-scraper
+npm install
+```
 
 ## Usage
 
 Run the script:
 
-`node index.js`
+```
+node index.js
+```
 
 ### CAUTH value
 
