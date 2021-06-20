@@ -39,6 +39,8 @@ To get the CAUTH value:
 
 ![test](./assets/prompt-cauth2.png)
 
+> Note that you must fetch the CAUTH value after you have logged in successfully on Coursera. If you get an authentication error, most likely this means that your Coursera login and CAUTH values have expired. To fix this, log in again in Coursera and copy the CAUTH value again.
+
 ### Course ID
 
 Next, the script will ask you for the ID of the course you would like to scrape:
@@ -53,9 +55,12 @@ Copy the course ID and paste in the `coursera-scraper` terminal:
 
 ![test](./assets/prompt-cid2.png)
 
+> Note that the course ID and CAUTH values will stored in a local configuration store, so that if you run the script again, you can reuse the values by simply pressing `<ENTER>`.
+
 ### Downloading course assets & videos
 
 At this stage, the script will start fetching and downloading all assets and videos in the course. This might take a few minutes depending on the number and size of the assets.
 
 ![test](./assets/asset-download.png)
 
+`coursera-dl` downloads 2 things
