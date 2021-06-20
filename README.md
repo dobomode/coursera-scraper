@@ -10,11 +10,20 @@ As of Jun 2021, the popular `couresera-dl` script is unable to authenticate on t
 
 `coursera-scraper` is lightweight Node.js script (~300 lines), which fetches and downloads lecture assets and videos for a single course, and saves them in a hierarchical directory structure on the local filesystem.
 
+## Prerequisites
+
+-   `git`
+-   `node`
+
 ## Installation
 
 Clone the repo on your local system:
 
 `git clone https://github.com/dobomode/coursera-scraper.git`
+
+Then install the packages:
+
+`npm install`
 
 ## Usage
 
