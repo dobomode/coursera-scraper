@@ -324,7 +324,7 @@ const app = (() => {
      *              ...
      */
     async function main() {
-        log(chalk.yellow(figlet.textSync('cscraper', { font: 'standard', horizontalLayout: 'full' })));
+        log(chalk.yellow(figlet.textSync('cscraper', { font: 'Standard', horizontalLayout: 'full' })));
         log();
         try {
             await getCourseAndCauth();
