@@ -151,11 +151,19 @@ const app = (() => {
      * @param {object} week The week object extracted from the course details
      */
     async function scrapeAsset(assetNum, asset, moduleNum, module, weekNum, week) {
-        log(
-            `      ${chalk.white('Asset')} ${chalk.yellow(
-                `#${padZero(assetNum)} - ` + `Downloading ${asset.definition.name}`
-            )}`
-        );
+        if (asset && asset.typeName && asset.typeName == 'url') {
+            log(
+                `      ${chalk.white('Asset')} ${chalk.yellow(
+                    `#${padZero(assetNum)} - ` + `Skipping URL ${asset.definition.name}`
+                )}`
+            );
+            return;
+        } else
+            log(
+                `      ${chalk.white('Asset')} ${chalk.yellow(
+                    `#${padZero(assetNum)} - ` + `Downloading ${asset.definition.name}`
+                )}`
+            );
 
         const resAsset = await axios
             .get(`https://www.coursera.org/api/assets.v1/${asset.definition.assetId}?fields=fileExtension`, {
