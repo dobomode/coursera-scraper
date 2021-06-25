@@ -15,7 +15,7 @@ As of Jun 2021, the popular `couresera-dl` script is unable to authenticate on t
 ## Prerequisites
 
 -   `git`
--   `node`
+-   `node` (v14+)
 
 ## Installation
 
