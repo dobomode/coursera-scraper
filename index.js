@@ -198,7 +198,8 @@ const app = (() => {
 
         const url = video.sources.byResolution['720p'].mp4VideoUrl;
         const fileName = `${padZero(videoNum)} - Lecture video (720p).mp4`;
-        const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + module.name);
+        const moduleName = module.name.replace(/[\/\:*?"<>|+]/g, ' ');
+        const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download().catch((err) => {
             throw err + '\nUnable to download video.\n';
