@@ -174,7 +174,8 @@ const app = (() => {
             });
         const { url } = resAsset.data.elements[0].url;
         const fileName = `${padZero(assetNum)} - ${resAsset.data.elements[0].name}`;
-        const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + module.name);
+        const moduleName = module.name.replace(/[\/\:*?"<>|+]/g, ' ');
+        const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download();
         log(`      ${chalk.white('Asset')} ${chalk.green(`#${padZero(assetNum)} - Saved '${fileName}'`)}`);
