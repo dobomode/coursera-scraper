@@ -2,7 +2,7 @@
 
 ![coursera-scraper logo](./assets/cscraper-logo.png)
 
-A lightweight Node.js app to fetch assets & videos for Coursera courses.
+A lightweight Node.js app to scrape assets & videos for Coursera courses.
 
 ## Why another Coursera download utility?
 
