@@ -5,6 +5,7 @@ const path = require('path');
 const chalk = require('chalk');
 const figlet = require('figlet');
 const Downloader = require('nodejs-file-downloader');
+const { assert } = require('console');
 
 /**
  * Local configuration store to persists course ID and CAUTH value
@@ -174,7 +175,7 @@ const app = (() => {
             });
         const { url } = resAsset.data.elements[0].url;
         const fileName = `${padZero(assetNum)} - ${resAsset.data.elements[0].name}`;
-        const moduleName = module.name.replace(/[\/\:*?"<>|+]/g, ' ');
+        const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download();
@@ -199,7 +200,7 @@ const app = (() => {
 
         const url = video.sources.byResolution['720p'].mp4VideoUrl;
         const fileName = `${padZero(videoNum)} - Lecture video (720p).mp4`;
-        const moduleName = module.name.replace(/[\/\:*?"<>|+]/g, ' ');
+        const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download().catch((err) => {
@@ -219,7 +220,7 @@ const app = (() => {
      * @param {object} week The week object extracted from the course details
      */
     async function scrapeModule(moduleNum, module, weekNum, week) {
-        log(`\n    ${chalk.white('Module')} ${chalk.yellow(`#${padZero(moduleNum)} - ${module.name}`)}`);
+        log(`\n    ${chalk.white('Module')} ${chalk.yellow(`#${padZero(moduleNum)} - ${module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_")}`)}`);
 
         const lectureAssets = axios
             .get(
