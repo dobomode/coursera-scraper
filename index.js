@@ -283,9 +283,12 @@ const app = (() => {
         log(`\n  ${chalk.white('Week')} ${chalk.yellow(`#${padZero(weekNum)}`)}`);
 
         let moduleNum = 0;
-        for (const module of week.modules[0].items) {
-            moduleNum += 1;
-            await scrapeModule(moduleNum, module, weekNum, week);
+        for (const modulem of week.modules)
+        { 
+            for (const item of modulem.items) {
+                moduleNum += 1;
+                await scrapeModule(moduleNum, item, weekNum, week);
+            }
         }
     }
 
