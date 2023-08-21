@@ -6,6 +6,8 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const Downloader = require('nodejs-file-downloader');
 const { assert } = require('console');
+const fs = require('fs');
+
 
 /**
  * Local configuration store to persists course ID and CAUTH value
@@ -53,6 +55,20 @@ const app = (() => {
      */
     function padZero(i) {
         return String(i).padStart(2, '0');
+    }
+
+    /**
+     * Checks if a file exists at the specified path.
+     * @param {string} filePath - The path to the file.
+     * @returns {Promise<boolean>} - True if the file exists, false otherwise.
+     */
+    async function fileExists(filePath) {
+        try {
+            await fs.access(filePath);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     /**
@@ -173,10 +189,20 @@ const app = (() => {
             .catch((err) => {
                 throw err + '\nUnable to download asset.\n';
             });
+
         const { url } = resAsset.data.elements[0].url;
         const fileName = `${padZero(assetNum)} - ${resAsset.data.elements[0].name}`;
         const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
+        const filePath = path.join(directory, fileName);
+    
+        // Check if the file already exists before downloading
+        const fileAlreadyExists = await fileExists(filePath);
+        if (fileAlreadyExists) {
+            log(`      ${chalk.white('Asset')} ${chalk.yellow(`#${padZero(assetNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+            return;
+        }
+        
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download();
         log(`      ${chalk.white('Asset')} ${chalk.green(`#${padZero(assetNum)} - Saved '${fileName}'`)}`);
@@ -198,10 +224,20 @@ const app = (() => {
             )}`
         );
 
+
         const url = video.sources.byResolution['720p'].mp4VideoUrl;
         const fileName = `${padZero(videoNum)} - Lecture video (720p).mp4`;
         const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
+        const filePath = path.join(directory, fileName);
+    
+        // Check if the file already exists before downloading
+        const fileAlreadyExists = await fileExists(filePath);
+        if (fileAlreadyExists) {
+            log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+            return;
+        }
+        
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download().catch((err) => {
             throw err + '\nUnable to download video.\n';
