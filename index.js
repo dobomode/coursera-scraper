@@ -17,6 +17,8 @@ const config = new Configstore('coursera-asset-scraper', require('./config_defau
 });
 
 const app = (() => {
+
+
     /**
      * The course ID which can be found in the Coursera URL
      * E.g. 'convolutional-neural-networks' from https://www.coursera.org/learn/convolutional-neural-networks
@@ -56,6 +58,10 @@ const app = (() => {
     function padZero(i) {
         return String(i).padStart(2, '0');
     }
+
+
+    // Global flag to control skipping all existing files
+    let skipAll = false;
 
     /**
      * Checks if a file exists at the specified path.
@@ -196,12 +202,31 @@ const app = (() => {
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const filePath = path.join(directory, fileName);
     
-        // Check if the file already exists before downloading
-        const fileAlreadyExists = await fileExists(filePath);
-        if (fileAlreadyExists) {
-            log(`      ${chalk.white('Asset')} ${chalk.yellow(`#${padZero(assetNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+       // Check if the file already exists before downloading
+       const fileAlreadyExists = await fileExists(filePath);
+
+       if (fileAlreadyExists) {
+            
+            if (skipAll) {
+            log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
             return;
-        }
+            }
+
+            // Prompt the user to skip or download the existing file
+            const { skip } = await inquirer.prompt([
+                {
+                    name: 'skip',
+                    type: 'confirm',
+                    message: `File '${fileName}' already exists. Do you want to skip it?`,
+                    default: true,
+                },
+            ]);
+
+            if (skip) {
+                log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+                return;
+            }
+       }
         
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download();
@@ -231,11 +256,30 @@ const app = (() => {
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
         const filePath = path.join(directory, fileName);
     
-        // Check if the file already exists before downloading
+         // Check if the file already exists before downloading
         const fileAlreadyExists = await fileExists(filePath);
+        
         if (fileAlreadyExists) {
-            log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
-            return;
+
+            if (skipAll) {
+                log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+                return;
+            }
+
+            // Prompt the user to skip or download the existing file
+            const { skip } = await inquirer.prompt([
+                {
+                    name: 'skip',
+                    type: 'confirm',
+                    message: `File '${fileName}' already exists. Do you want to skip it?`,
+                    default: true,
+                },
+            ]);
+
+            if (skip) {
+                log(`      ${chalk.white('Video')} ${chalk.yellow(`#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`)}\n`);
+                return;
+            }
         }
         
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
