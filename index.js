@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const Downloader = require('nodejs-file-downloader');
 const { assert } = require('console');
+const fs = require('fs');
 
 /**
  * Local configuration store to persists course ID and CAUTH value
@@ -26,6 +27,11 @@ const app = (() => {
      * Application => Cookies => 'www.coursera.org' => CAUTH
      */
     let _cauth;
+    /**
+     * Flag to control whether existing files should be overwritten or skipped.
+     * True = overwrite existing files; False = skip existing files
+     */
+    let _overwrite;
 
     /**
      * The ID of the authenticated user
@@ -92,6 +98,25 @@ const app = (() => {
     }
 
     /**
+     * Asks the user if existing files should be skipped or downloaded again.
+     * @returns {object} An object containing the course details.
+     */
+    async function promptOverwriteExisting() {
+        const res = await inquirer.prompt({
+            name: 'overwriteExist',
+            type: 'confirm',
+            message: `Should existing files be overwritten (Y = Yes, download again and overwrite; N = No, skip download)?`,
+            default: true,
+            get default() {
+                return config.get('overwriteExist');
+            },
+            validate: (val) => !!val,
+        });
+
+        return res.overwriteExist;
+    }
+
+    /**
      * Prompts the user for the course ID and CAUTH value and stores them in the local configuration store
      */
     async function getCourseAndCauth() {
@@ -99,6 +124,8 @@ const app = (() => {
         config.set('cauth', _cauth);
         _cid = await promptCourse();
         config.set('cid', _cid);
+        _overwrite = await promptOverwriteExisting();
+        config.set('overwriteExist', _overwrite);
     }
 
     /**
@@ -173,10 +200,30 @@ const app = (() => {
             .catch((err) => {
                 throw err + '\nUnable to download asset.\n';
             });
+
         const { url } = resAsset.data.elements[0].url;
         const fileName = `${padZero(assetNum)} - ${resAsset.data.elements[0].name}`;
-        const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
+        const moduleName = module.name
+            .replace(/\n/g, ' ')
+            .replace(/[<>:"/\\|?*\x00-\x1F]| +$/g, '')
+            .replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/, (x) => x + '_');
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
+        const filePath = path.join(directory, fileName);
+
+        // Check if the file already exists before downloading
+        const fileAlreadyExists = fs.existsSync(filePath);
+
+        if (fileAlreadyExists) {
+            if (!_overwrite) {
+                log(
+                    `      ${chalk.white('Video')} ${chalk.red(
+                        `#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`
+                    )}\n`
+                );
+                return;
+            }
+        }
+
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download();
         log(`      ${chalk.white('Asset')} ${chalk.green(`#${padZero(assetNum)} - Saved '${fileName}'`)}`);
@@ -200,8 +247,27 @@ const app = (() => {
 
         const url = video.sources.byResolution['720p'].mp4VideoUrl;
         const fileName = `${padZero(videoNum)} - Lecture video (720p).mp4`;
-        const moduleName = module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_");
+        const moduleName = module.name
+            .replace(/\n/g, ' ')
+            .replace(/[<>:"/\\|?*\x00-\x1F]| +$/g, '')
+            .replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/, (x) => x + '_');
         const directory = path.join('.', _cid, 'Week ' + padZero(weekNum), padZero(moduleNum) + ' - ' + moduleName);
+        const filePath = path.join(directory, fileName);
+
+        // Check if the file already exists before downloading
+        const fileAlreadyExists = fs.existsSync(filePath);
+
+        if (fileAlreadyExists) {
+            if (!_overwrite) {
+                log(
+                    `      ${chalk.white('Video')} ${chalk.red(
+                        `#${padZero(videoNum)} - Skipped '${fileName}' (already exists)`
+                    )}\n`
+                );
+                return;
+            }
+        }
+
         const downloader = new Downloader({ url, directory, fileName, cloneFiles: false, timeout: 300000 });
         await downloader.download().catch((err) => {
             throw err + '\nUnable to download video.\n';
@@ -220,7 +286,14 @@ const app = (() => {
      * @param {object} week The week object extracted from the course details
      */
     async function scrapeModule(moduleNum, module, weekNum, week) {
-        log(`\n    ${chalk.white('Module')} ${chalk.yellow(`#${padZero(moduleNum)} - ${module.name.replace(/\n/g," ").replace(/[<>:"/\\|?*\x00-\x1F]| +$/g,"").replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/,x=>x+"_")}`)}`);
+        log(
+            `\n    ${chalk.white('Module')} ${chalk.yellow(
+                `#${padZero(moduleNum)} - ${module.name
+                    .replace(/\n/g, ' ')
+                    .replace(/[<>:"/\\|?*\x00-\x1F]| +$/g, '')
+                    .replace(/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/, (x) => x + '_')}`
+            )}`
+        );
 
         const lectureAssets = axios
             .get(
@@ -283,8 +356,7 @@ const app = (() => {
         log(`\n  ${chalk.white('Week')} ${chalk.yellow(`#${padZero(weekNum)}`)}`);
 
         let moduleNum = 0;
-        for (const modulem of week.modules)
-        { 
+        for (const modulem of week.modules) {
             for (const item of modulem.items) {
                 moduleNum += 1;
                 await scrapeModule(moduleNum, item, weekNum, week);
