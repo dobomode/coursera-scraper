@@ -75,6 +75,15 @@ Copy the course ID and paste in the `coursera-scraper` terminal:
 
 > Note that the course ID and CAUTH values will stored in a local configuration store, so that if you run the script again, you can reuse the values by simply pressing `<ENTER>`.
 
+### Overwriting existing files
+
+Next, the script will ask you if existing files should be overwritten.
+
+![CID](./assets/prompt-overwrite.png)
+
+-   `Y` = Download again and overwrite existing files
+-   `N` = Skip download for existin files
+
 ### Downloading course assets & videos
 
 At this stage, the script will start fetching and downloading all assets and videos in the course. This might take a few minutes depending on the number and size of the assets.
